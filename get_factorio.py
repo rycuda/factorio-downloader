@@ -11,10 +11,10 @@ import requests
 
 
 #  URL for factorio website
-baseUrl = 'https://www.factorio.com'
+BASE_URL = 'https://www.factorio.com'
 
 #  grab the HTML from the downloads page for parsing.
-page = requests.get(baseUrl + '/download-headless')
+PAGE = requests.get(BASE_URL + '/download-headless')
 
 #  Define parser, we're looking for links that reference the server file downloads
 class FindLink(HTMLParser):
@@ -26,20 +26,20 @@ class FindLink(HTMLParser):
 
     def handle_starttag(self, tag, attrs):
         if tag == "a":
-            for name, value in attrs:
+            for dummy, value in attrs:
                 if re.match(r"/get-download/[\d.]+/headless/linux64", value):
                     self.data.append(value)
 
 
 #  we only care about the most recent version of the server.
 
-parser = FindLink()
-parser.feed(page.text)
-downloadLinks = parser.data
-downloadLinks.sort()
+PARSER = FindLink()
+PARSER.feed(PAGE.text)
+DOWNLOAD_LINKS = PARSER.data
+DOWNLOAD_LINKS.sort()
 
 #  return the URL.
 
-print(baseUrl + downloadLinks.pop())
+print(BASE_URL + DOWNLOAD_LINKS.pop())
 
 # use curl -JLO $(python3 this_script) to get latest factorio. Hopefully
